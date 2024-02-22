@@ -1,6 +1,7 @@
 package service
 
 import (
+	"classroom/dto"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -14,17 +15,16 @@ import (
 	"google.golang.org/api/option"
 )
 
-// Este arquivo realiza a conexão com a API do google através 
+// Este arquivo realiza a conexão com a API do google através
 // da camada de serviço.
 type GoogleService interface {
-	GetCourses()
+	GetCourses(chan map[string]string)
+	GetCourseData(string, chan []dto.StudentInfo)
 }
 
 type googleService struct {
 	classroom *classroom.Service
 }
-
-
 
 func NewGoogleService(classroomService *classroom.Service) *googleService {
 	return &googleService{
@@ -117,5 +117,3 @@ func NewClassroomService() *classroom.Service {
 		
 		return srv
 }
-
-
