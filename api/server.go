@@ -24,5 +24,6 @@ func (s *Server) Start() error {
 	s.mux.HandleFunc("/courses", MakeHTTPHandler(s.handleGetCourses))
 	s.mux.HandleFunc("/courses/{id}", MakeHTTPHandler(s.handleGetCourseStudentsData))
 
-	return http.ListenAndServe(":8081", s.mux)
+	configuredRouter := LoggingMiddleware(s.mux)
+	return http.ListenAndServe(":8080", configuredRouter)
 }
