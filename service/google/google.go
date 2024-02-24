@@ -19,7 +19,8 @@ import (
 // da camada de serviço.
 type GoogleService interface {
 	GetCourses(chan map[string]string)
-	GetCourseData(string, chan []dto.StudentInfo)
+	GetCourseData(string, chan *dto.CourseInfo)
+	GetListOfCoursesData(coursesId []string, ch chan []dto.CourseInfo)
 }
 
 type googleService struct {

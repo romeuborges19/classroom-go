@@ -23,6 +23,8 @@ func NewServer(googleService service.GoogleService) *Server{
 func (s *Server) Start() error {
 	s.mux.HandleFunc("/courses", MakeHTTPHandler(s.handleGetCourses))
 	s.mux.HandleFunc("/courses/{id}", MakeHTTPHandler(s.handleGetCourseStudentsData))
+	s.mux.HandleFunc("/courses/get", MakeHTTPHandler(s.handleGetLisfOfCourseStudentsData))
+
 
 	configuredRouter := LoggingMiddleware(s.mux)
 	return http.ListenAndServe(":8080", configuredRouter)

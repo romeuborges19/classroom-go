@@ -5,3 +5,8 @@ type StudentInfo struct {
 	FullName string `json:"fullname"`
 	Email    string `json:"email"`
 }
+
+type CourseInfo struct {
+	CourseName  string          `json:"courseName"`
+	Students    *[]StudentInfo  `json:"students"`
+}
