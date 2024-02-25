@@ -8,7 +8,7 @@ import (
 
 
 func (g *googleService) GetCourses(respch chan map[string]string){
-	r, err := g.classroom.Courses.List().PageSize(10).Do()
+	r, err := g.classroom.Courses.List().Fields("id","name").PageSize(10).Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve courses. %v", err)
 	}
@@ -23,10 +23,12 @@ func (g *googleService) GetCourses(respch chan map[string]string){
 }
 
 func (g *googleService) GetCourseData(courseId string, ch chan *dto.CourseInfo){
-	res, err := g.classroom.Courses.Get(courseId).Do()
+	res, err := g.classroom.Courses.Get(courseId).Fields("name").Do()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Println(res)
 
 	var studentsData []dto.StudentInfo
 	
@@ -38,7 +40,11 @@ func (g *googleService) GetCourseData(courseId string, ch chan *dto.CourseInfo){
 	nextPageToken := ""
 	index := 0
 	for {
-		call := g.classroom.Courses.Students.List(courseId).PageToken(nextPageToken)
+		call := g.classroom.Courses.Students.List(courseId).Fields(
+			"students/profile/name/fullName", 
+			"students/profile/emailAddress", 
+			"nextPageToken",
+			).PageToken(nextPageToken)
 		res, err := call.Do()
 		if err != nil {
 			log.Fatal(err)
@@ -64,7 +70,7 @@ func (g *googleService) GetCourseData(courseId string, ch chan *dto.CourseInfo){
 func (g *googleService) GetListOfCoursesData(coursesId []string, ch chan []dto.CourseInfo){
 	var coursesInfo []dto.CourseInfo
 	for _, courseId := range coursesId {
-		res, err := g.classroom.Courses.Get(courseId).Do()
+		res, err := g.classroom.Courses.Get(courseId).Fields("name").Do()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -77,9 +83,14 @@ func (g *googleService) GetListOfCoursesData(coursesId []string, ch chan []dto.C
 		}
 
 		nextPageToken := ""
-		index := 0
+		i := 0
 		for {
-			call := g.classroom.Courses.Students.List(courseId).PageToken(nextPageToken)
+			call := g.classroom.Courses.Students.List(courseId).Fields(
+			"students/profile/name/fullName", 
+			"students/profile/emailAddress", 
+			"nextPageToken",
+			).PageToken(nextPageToken)
+
 			res, err := call.Do()
 			if err != nil {
 				log.Fatal(err)
@@ -87,11 +98,11 @@ func (g *googleService) GetListOfCoursesData(coursesId []string, ch chan []dto.C
 
 			for _, student := range res.Students {
 				studentsData = append(studentsData, dto.StudentInfo{
-					ID: index,
+					ID: i,
 					FullName: student.Profile.Name.FullName,
 					Email: student.Profile.EmailAddress,
 				})
-				index = index + 1
+				i++
 			}
 
 			nextPageToken = res.NextPageToken

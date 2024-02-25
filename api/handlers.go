@@ -4,6 +4,7 @@ import (
 	"classroom/dto"
 	"net/http"
 	"strings"
+
 	"github.com/gorilla/mux"
 )
 
@@ -40,6 +41,11 @@ func (s *Server) handleGetLisfOfCourseStudentsData(w http.ResponseWriter, r *htt
 		return apiError{Err: "Invalid method.", Status: http.StatusMethodNotAllowed}
 	}
 	idsUrl := r.URL.Query().Get("ids")
+
+	if idsUrl == "" {
+		return apiError{Err:"Invalid query", Status: http.StatusUnprocessableEntity}
+	}
+
 	ids := strings.Split(idsUrl, ",")
 
 	ch := make(chan []dto.CourseInfo)
@@ -48,4 +54,3 @@ func (s *Server) handleGetLisfOfCourseStudentsData(w http.ResponseWriter, r *htt
 
 	return writeJSON(w, http.StatusOK, resp)
 }
-

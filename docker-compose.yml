@@ -9,3 +9,18 @@ services:
       - "8080:8080"
     volumes:
       - ./:/go-classroom
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    ports:
+      - "5433:5433"
+    env_file:
+      - .env
+
+  redis:
+    image: redis/redis-stack-server:latest
+    command: redis-stack-server --port 6379
+    ports:
+      - "6379:6379"
