@@ -12,7 +12,9 @@ import (
 
 var DB *sql.DB
 
-type DAO interface {}
+type DAO interface {
+	NewGroupQuery() GroupQuery
+}
 
 type dao struct {}
 
@@ -39,4 +41,8 @@ func NewDB() (*sql.DB, error) {
 	}
 
 	return DB, err
+}
+
+func (d *dao) NewGroupQuery() GroupQuery {
+	return &groupQuery{}
 }

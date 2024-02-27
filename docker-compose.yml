@@ -11,16 +11,26 @@ services:
       - ./:/go-classroom
     depends_on:
       - db
+      - redis
 
   db:
     image: postgres:latest
     ports:
-      - "5433:5433"
+      - "{$POSTGRES_PORT}:{$POSTGRES_PORT}"
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DBNAME: ${POSTGRES_DBNAME}
     env_file:
       - .env
 
   redis:
     image: redis/redis-stack-server:latest
-    command: redis-stack-server --port 6379
+    command: redis-stack-server --port ${REDIS_PORT}
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}

@@ -8,7 +8,7 @@ import (
 
 
 func (g *googleService) GetCourses(respch chan map[string]string){
-	r, err := g.classroom.Courses.List().Fields("id","name").PageSize(10).Do()
+	r, err := g.classroom.Courses.List().Fields("courses/id","courses/name").PageSize(10).Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve courses. %v", err)
 	}

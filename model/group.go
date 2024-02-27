@@ -8,10 +8,16 @@ import (
 
 type Group struct {
 	ID          int
-	name        string
-	students    []*Student 
-	createdAt   *time.Time
-	modifiedAt  *time.Time
+	Name        string
+	Classes     []*Class
+	Students    []*Student 
+	CreatedAt   *time.Time
+	ModifiedAt  *time.Time
+}
+
+type Class struct {
+	ID    string
+	Name  string
 }
 
 type Student struct {
