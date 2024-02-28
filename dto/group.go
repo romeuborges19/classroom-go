@@ -5,19 +5,13 @@ import "time"
 type Group struct {
 	ID        int
 	Name      string
-	Classes   []ClassInfo
-	Students  []StudentInfo
+	Classes   []CourseInfo
 	CreatedAt *time.Time
 }
 
 type CreateGroup struct {
 	Name    string
 	Classes string
-}
-
-type ClassInfo struct {
-	ID         string    `json:"id"`
-	CourseName string `json:"courseName"`
 }
 
 type StudentInfo struct {
@@ -27,6 +21,7 @@ type StudentInfo struct {
 }
 
 type CourseInfo struct {
+	ID          string 			`json:"id"`
 	CourseName  string          `json:"courseName"`
-	Students    *[]StudentInfo  `json:"students"`
+	Students    *[]StudentInfo  `json:"students,omitempty"`
 }

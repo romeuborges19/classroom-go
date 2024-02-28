@@ -12,11 +12,12 @@ services:
     depends_on:
       - db
       - redis
+    restart: on-failure
 
   db:
     image: postgres:latest
     ports:
-      - "{$POSTGRES_PORT}:{$POSTGRES_PORT}"
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     environment:
       POSTGRES_HOST: ${POSTGRES_HOST}
       POSTGRES_PORT: ${POSTGRES_PORT}

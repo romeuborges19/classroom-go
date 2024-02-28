@@ -1,10 +1,11 @@
-package api
+package routes
 
 import (
+	"classroom/api/middleware"
 	"classroom/repository"
-	"classroom/service/google"
+	"classroom/service"
+	google "classroom/service/google"
 	"database/sql"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -15,24 +16,20 @@ type Server struct {
 	db *sql.DB
 	cache *redis.Client
 	mux *mux.Router
-	googleService service.GoogleService
+	googleService google.GoogleService
+	groupService service.GroupService
 }
 
-func NewServer(googleService service.GoogleService) *Server{
+func NewServer(googleService google.GoogleService, groupService service.GroupService, db *sql.DB) *Server{
 	mux := mux.NewRouter()
 	cache := repository.NewCache()
-
-	db, err := repository.NewDB()
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
 
 	return &Server{
 		db: db,
 		cache: cache,
 		mux: mux,
 		googleService: googleService,
+		groupService: groupService,
 	}
 }
 
@@ -42,6 +39,6 @@ func (s *Server) Start() error {
 	s.mux.HandleFunc("/courses/", MakeHTTPHandler(s.handleGetLisfOfCourseStudentsData))
 	s.mux.HandleFunc("/groups/create", MakeHTTPHandler(s.handleCreateGroup))
 
-	configuredRouter := LoggingMiddleware(s.mux)
+	configuredRouter := middleware.LoggingMiddleware(s.mux)
 	return http.ListenAndServe(":8080", configuredRouter)
 }

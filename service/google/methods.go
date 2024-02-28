@@ -70,7 +70,7 @@ func (g *googleService) GetCourseData(courseId string, ch chan *dto.CourseInfo){
 func (g *googleService) GetListOfCoursesData(coursesId []string, ch chan []dto.CourseInfo){
 	var coursesInfo []dto.CourseInfo
 	for _, courseId := range coursesId {
-		res, err := g.classroom.Courses.Get(courseId).Fields("name").Do()
+		res, err := g.classroom.Courses.Get(courseId).Fields("id","name").Do()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -78,6 +78,7 @@ func (g *googleService) GetListOfCoursesData(coursesId []string, ch chan []dto.C
 		var studentsData []dto.StudentInfo
 		
 		c := dto.CourseInfo{
+			ID: res.Id,
 			CourseName: res.Name,
 			Students: &studentsData,
 		}

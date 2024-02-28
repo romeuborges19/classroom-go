@@ -9,15 +9,15 @@ import (
 type Group struct {
 	ID          int
 	Name        string
-	Classes     []*Class
-	Students    []*Student 
+	Classes     Courses
 	CreatedAt   *time.Time
 	ModifiedAt  *time.Time
 }
 
-type Class struct {
-	ID    string
-	Name  string
+type Course struct {
+	ID       string     `json:"id"`
+	Name     string     `json:"name"`
+	Students []*Student `json:"students"`
 }
 
 type Student struct {
@@ -26,6 +26,8 @@ type Student struct {
 	Email 	 string  `json:"email"`
 }
 
-func (s *Student) Value() (driver.Value, error) {
-	return json.Marshal(s)
+type Courses []Course
+
+func (c *Courses) Value() (driver.Value, error) {
+	return json.Marshal(c)
 }

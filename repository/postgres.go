@@ -40,7 +40,7 @@ func NewDB() (*sql.DB, error) {
 		return nil, err
 	}
 
-	return DB, err
+	return DB, nil
 }
 
 func (d *dao) NewGroupQuery() GroupQuery {

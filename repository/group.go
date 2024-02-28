@@ -16,14 +16,15 @@ type GroupQuery interface {
 type groupQuery struct {}
 
 func (g *groupQuery) CreateGroup (group *model.Group, db *sql.DB) (int64, error) {
-	query := `INSERT INTO "group"("name", "students") VALUES ($1, $2) RETURNING "id";`
+	query := `INSERT INTO "groups"("name", "classes") VALUES ($1, $2) RETURNING "id";`
 
-	res, err := db.Exec(query, group.Name, group.Students)
+	classesJSON, err := group.Classes.Value()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error convertendo turmas para JSON: %v", classesJSON)
 	}
 
-	id, err := res.LastInsertId()
+	var id int64
+	err = db.QueryRow(query, group.Name, classesJSON).Scan(&id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -47,7 +48,7 @@ func (g *groupQuery) GetGroups (db *sql.DB) ([]model.Group, error) {
 		err := rows.Scan(
 			&group.ID,
 			&group.Name,
-			&group.Students,
+			&group.Classes,
 			&group.CreatedAt,
 			&group.ModifiedAt,
 		)
@@ -74,7 +75,7 @@ func (g *groupQuery) GetGroupById (id int, db *sql.DB) (model.Group, error) {
 	err := db.QueryRow(query, id).Scan(
 		&group.ID,
 		&group.Name,
-		&group.Students,
+		&group.Classes,
 		&group.CreatedAt,
 		&group.ModifiedAt,
 	)

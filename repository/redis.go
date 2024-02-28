@@ -16,8 +16,8 @@ func NewCache() *redis.Client {
 		log.Fatalf("Error loading .env file: %s", err)
 	}
 
-	redisPort := os.Getenv("REDIS_PORT")
 	redisHost := os.Getenv("REDIS_HOST")
+	redisPort := os.Getenv("REDIS_PORT")
 	addr := fmt.Sprintf("%s:%s", redisHost, redisPort)
 
 	client := redis.NewClient(&redis.Options{

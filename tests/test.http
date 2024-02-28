@@ -5,3 +5,5 @@ Content-Type: application/json
 	"name": "TestGroup",
 	"classes": "589431700637,590861439156"
 }
+
+GET http://localhost:8080/courses
