@@ -14,6 +14,13 @@ func (e apiError) Error() string {
 	return e.Err
 }
 
+func APIError(err string, status int) apiError {
+	return apiError{
+		Err: err,
+		Status: status,
+	}
+}
+
 type apiFunc func(http.ResponseWriter, *http.Request) error
 
 func MakeHTTPHandler(f apiFunc) http.HandlerFunc {

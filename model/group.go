@@ -7,11 +7,11 @@ import (
 )
 
 type Group struct {
-	ID          int
-	Name        string
-	Classes     Courses
-	CreatedAt   *time.Time
-	ModifiedAt  *time.Time
+	ID          int        `json:"id"`
+	Name        string     `json:"name"`
+	Classes     Courses    `json:"classes"`
+	CreatedAt   *time.Time `json:"createdAt"`
+	ModifiedAt  *time.Time `json:"modifiedAt"`
 }
 
 type Course struct {
@@ -30,4 +30,8 @@ type Courses []Course
 
 func (c *Courses) Value() (driver.Value, error) {
 	return json.Marshal(c)
+}
+
+func (g *Group) Value() (driver.Value, error) {
+	return json.Marshal(g)
 }

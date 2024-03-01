@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"classroom/api/routes"
 	"classroom/repository"
@@ -16,11 +17,12 @@ func main() {
 	}
 	defer db.Close()
 
-	log.Println(db)
+	cache := repository.NewCache()
+
 	dao := repository.NewDAO()
 	c := google.NewClassroomService()
 	g := google.NewGoogleService(c)
-	gr := service.NewGroupService(g, dao)
+	gr := service.NewGroupService(g, dao, cache)
 
 	s := routes.NewServer(g, gr, db)
 
@@ -28,6 +30,6 @@ func main() {
 		log.Fatalf("treste %v", err)
 	}
 
-
-	log.Fatal(s.Start())
+	server := s.Start()
+	http.ListenAndServe(":8080", server)
 }

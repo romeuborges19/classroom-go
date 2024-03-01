@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func (s *Server) handleCreateGroup(w http.ResponseWriter, r *http.Request) error {
@@ -31,5 +33,25 @@ func (s *Server) handleCreateGroup(w http.ResponseWriter, r *http.Request) error
 
 	writeJSON(w, http.StatusCreated, resp)
 
+	return nil
+}
+
+func (s *Server) handleGetGroupById(w http.ResponseWriter,r *http.Request) error {
+	if r.Method != http.MethodGet {
+		return apiError{
+			Err: "Invalid method.",
+			Status: http.StatusMethodNotAllowed,
+		}
+	}
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	resp, err := s.groupService.GetGroupById(id, s.db)
+	if err != nil {	
+		return APIError(err, http.StatusInternalServerError)
+	}
+
+	writeJSON(w, http.StatusOK, resp)
 	return nil
 }

@@ -3,10 +3,10 @@ package dto
 import "time"
 
 type Group struct {
-	ID        int
-	Name      string
-	Classes   []CourseInfo
-	CreatedAt *time.Time
+	ID        int          `redis:"id"`
+	Name      string       `redis:"name"`
+	Classes   []CourseInfo `redis:"classes"`
+	CreatedAt *time.Time   `redis:"createdAt"`
 }
 
 type CreateGroup struct {

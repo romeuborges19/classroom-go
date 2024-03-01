@@ -3,6 +3,7 @@ package service
 import (
 	"classroom/dto"
 	"log"
+	"time"
 )
 
 
@@ -70,10 +71,12 @@ func (g *googleService) GetCourseData(courseId string, ch chan *dto.CourseInfo){
 func (g *googleService) GetListOfCoursesData(coursesId []string, ch chan []dto.CourseInfo){
 	var coursesInfo []dto.CourseInfo
 	for _, courseId := range coursesId {
+		start := time.Now()
 		res, err := g.classroom.Courses.Get(courseId).Fields("id","name").Do()
 		if err != nil {
 			log.Fatal(err)
 		}
+		log.Printf("API - Cursos: %v", time.Since(start))
 
 		var studentsData []dto.StudentInfo
 		
@@ -86,13 +89,15 @@ func (g *googleService) GetListOfCoursesData(coursesId []string, ch chan []dto.C
 		nextPageToken := ""
 		i := 0
 		for {
+			start = time.Now()
 			call := g.classroom.Courses.Students.List(courseId).Fields(
 			"students/profile/name/fullName", 
 			"students/profile/emailAddress", 
 			"nextPageToken",
 			).PageToken(nextPageToken)
-
 			res, err := call.Do()
+			log.Printf("API - Estudantes: %v", time.Since(start))
+
 			if err != nil {
 				log.Fatal(err)
 			}
